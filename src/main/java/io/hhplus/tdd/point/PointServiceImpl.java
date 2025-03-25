@@ -18,24 +18,18 @@ public class PointServiceImpl implements PointService{
         return userPointTable.selectById(id);
     }
 
-
     @Override
     public UserPoint chargePoint(long id, long amount){
-        //포인트는 음수가 될 수 없음. 1,000,000 초과 충전 불가능
-        if(amount <=0 || amount > 1_000_000) {
-            throw new IllegalArgumentException();
-        }
-        //point 누적 - 기존 point 조회 후, 더해서 넘기기
-        UserPoint userPoint = userPointTable.selectById(id);
-        long total = amount;
-        if(userPoint != null){
-            total += userPoint.point();
-        }
+        //현재 유저 포인트 조회
+        UserPoint current = userPointTable.selectById(id);
+
+        //포인트 충전
+        UserPoint charge = current.charge(amount);
 
         //포인트 충전 이력 저장
         recordHistory(id, amount, TransactionType.CHARGE);
 
-        return userPointTable.insertOrUpdate(id, total);
+        return userPointTable.insertOrUpdate(id, charge.point());
     }
 
     @Override
