@@ -18,9 +18,9 @@ public class PointService {
         return userPointTable.selectById(id);
     }
 
-    public UserPoint rechargePoint(long id, long amount){
-        //포인트는 음수가 될 수 없음. 1,000,000 이상 충전 불가능
-        if(amount <0 || amount > 1000000) {
+    public UserPoint chargePoint(long id, long amount){
+        //포인트는 음수가 될 수 없음. 1,000,000 초과 충전 불가능
+        if(amount <=0 || amount > 1_000_000) {
             throw new IllegalArgumentException();
         }
         //point 누적 - 기존 point 조회 후, 더해서 넘기기
