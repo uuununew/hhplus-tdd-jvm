@@ -31,7 +31,7 @@ class PointServiceImplTest {
 
 
     @Test
-    @DisplayName("포인트 충전 - 음수 금액 입력 시 실패")
+    @DisplayName("포인트 충전 - 음수 금액 입력 시 예외")
     public void chargePointFail_AmountIsNegative(){
         //given
         long userId = 1L;
@@ -43,7 +43,7 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("포인트 충전 -  1,000,000 초과 시 실패")
+    @DisplayName("포인트 충전 -  1,000,000 초과 시 예외")
     public void chargePointFail_AmountExceedsLimit(){
         //given
         long userId  = 1L;
@@ -80,4 +80,5 @@ class PointServiceImplTest {
                 eq(userId), eq(chargeAmount), eq(TransactionType.CHARGE), anyLong()
         );
     }
+
 }
