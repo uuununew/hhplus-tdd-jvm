@@ -21,4 +21,15 @@ public record UserPoint(
         }
         return new UserPoint(id(), total, System.currentTimeMillis());
     }
+
+    public UserPoint use(long amountToUse){
+        if(amountToUse <= 0){
+            throw new IllegalArgumentException("사용 금액은 1 이상이어야 합니다.");
+        }
+        if(this.point < amountToUse){
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
+        long afterUsePoint = this.point - amountToUse;
+        return new UserPoint(this.id, afterUsePoint, System.currentTimeMillis());
+    }
 }
