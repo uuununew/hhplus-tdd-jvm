@@ -14,11 +14,14 @@ class UserPointTableTest {
     @Test
     @DisplayName("포인트 삽입/업데이트 후 조회")
     void insertOrUpdateAndSelect() {
+        //given
         long userId = 1L;
 
+        //when
         // insert
         userPointTable.insertOrUpdate(userId, 1000L);
 
+        //then
         // select
         UserPoint result = userPointTable.selectById(userId);
         assertThat(result.point()).isEqualTo(1000L);
