@@ -49,7 +49,7 @@ public class PointServiceImpl implements PointService{
         UserPoint userPoint = pointRepository.selectById(id);
 
         if (userPoint == null) {
-            throw new PointException(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT);
+            throw new PointException(PointErrorCode.USER_ID_NOT_EXIST);
         }
         //포인트 사용
         UserPoint used = userPoint.use(amount);
