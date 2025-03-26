@@ -12,8 +12,8 @@ public class PointRepository {
 
     private final UserPointTable userPointTable;
 
-    public Optional<UserPoint> selectById(long id) {
-        return Optional.ofNullable(userPointTable.selectById(id));
+    public UserPoint selectById(long id) {
+        return userPointTable.selectById(id);
     }
 
     public UserPoint insertOrUpdate(UserPoint userPoint) {

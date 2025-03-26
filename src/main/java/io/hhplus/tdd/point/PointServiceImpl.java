@@ -18,11 +18,11 @@ public class PointServiceImpl implements PointService{
     @Override
     public UserPoint getUserPoint(long id) {
         //포인트 조회
-        Optional<UserPoint> optional = pointRepository.selectById(id);
-        if (optional.isEmpty()) {
+       UserPoint userPoint = pointRepository.selectById(id);
+        if (userPoint == null) {
             throw new PointException(PointErrorCode.USER_ID_NOT_EXIST);
         }
-        return optional.get();
+        return userPoint;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PointServiceImpl implements PointService{
     @Override
     public UserPoint charge(long id, long amount) {
         //포인트 충전
-        UserPoint userPoint = pointRepository.selectById(id).orElse(UserPoint.empty(id));
+        UserPoint userPoint = pointRepository.selectById(id);
         UserPoint charged = userPoint.charge(amount);
         UserPoint saved = pointRepository.insertOrUpdate(charged);
 
@@ -46,14 +46,10 @@ public class PointServiceImpl implements PointService{
 
     @Override
     public UserPoint use(long id, long amount) {
-
-        Optional<UserPoint> optional = pointRepository.selectById(id);
-        if (optional.isEmpty()) {
-            throw new PointException(PointErrorCode.USER_ID_NOT_EXIST);
-        }
+        UserPoint userPoint = pointRepository.selectById(id);
 
         //포인트 사용
-        UserPoint used = optional.get().use(amount);
+        UserPoint used = userPoint.use(amount);
         UserPoint updated = pointRepository.insertOrUpdate(used);
 
         //사용 내역 저장
