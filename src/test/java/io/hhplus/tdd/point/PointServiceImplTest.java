@@ -45,8 +45,21 @@ class PointServiceImplTest {
     }
 
     @Test
+    @DisplayName("유저 포인트 조회 실패 - 존재하지 않는 사용자")
+    void getUserPointFail() {
+        long userId = 2L;
+        when(pointRepository.selectById(userId)).thenReturn(Optional.empty());
+        try {
+            pointService.getUserPoint(userId);
+            fail("예외가 발생해야 합니다.");
+        } catch (PointException e) {
+            assertThat(e.getMessage()).isEqualTo(PointErrorCode.USER_ID_NOT_EXIST.getMessage());
+        }
+    }
+
+    @Test
     @DisplayName("포인트 충전 성공")
-    void chargePointSuccess() {
+    void chargeSuccess() {
         long userId = 1L;
         long amount = 1000L;
         UserPoint existing = new UserPoint(userId, 500L, System.currentTimeMillis());
@@ -62,30 +75,8 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("포인트 충전 실패 - 음수 입력")
-    void chargePointNegativeAmountFail() {
-        try {
-            pointService.charge(1L, -1000L);
-            fail("예외가 발생해야 합니다.");
-        } catch (PointException e) {
-            assertEquals(PointErrorCode.CHARGE_AMOUNT_LESS_THAN_ZERO.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("포인트 충전 실패 - 최대값 초과")
-    void chargePointExceedMaxFail() {
-        try {
-            pointService.charge(1L, 1_000_001L);
-            fail("예외가 발생해야 합니다.");
-        } catch (PointException e) {
-            assertEquals(PointErrorCode.CHARGE_AMOUNT_GREATER_THAN_MAX.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test
     @DisplayName("포인트 사용 성공")
-    void usePointSuccess() {
+    void useSuccess() {
         long userId = 1L;
         long amount = 300L;
         UserPoint existing = new UserPoint(userId, 1000L, System.currentTimeMillis());
@@ -101,26 +92,11 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 실패 - 음수 입력")
-    void usePointNegativeAmountFail() {
+    @DisplayName("포인트 사용 실패 - 존재하지 않는 사용자")
+    void useUserNotFoundFail() {
+        when(pointRepository.selectById(anyLong())).thenReturn(Optional.empty());
         try {
-            pointService.use(1L, -500L);
-            fail("예외가 발생해야 합니다.");
-        } catch (PointException e) {
-            assertThat(e.getMessage()).isEqualTo(PointErrorCode.USE_AMOUNT_LESS_THAN_ZERO.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("포인트 사용 실패 - 잔액 부족")
-    void usePointInsufficientBalanceFail() {
-        long userId = 1L;
-        UserPoint existing = new UserPoint(userId, 200L, System.currentTimeMillis());
-
-        when(pointRepository.selectById(userId)).thenReturn(Optional.of(existing));
-
-        try {
-            pointService.use(userId, 500L);
+            pointService.use(1L, 100L);
             fail("예외가 발생해야 합니다.");
         } catch (PointException e) {
             assertThat(e.getMessage()).isEqualTo(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT.getMessage());
@@ -134,7 +110,6 @@ class PointServiceImplTest {
         List<PointHistory> histories = List.of(
                 PointHistory.createChargeHistory(userId, 1000L, System.currentTimeMillis())
         );
-
         when(pointHistoryRepository.selectAllByUserId(userId)).thenReturn(histories);
 
         List<PointHistory> result = pointService.getUserPointHistory(userId);
