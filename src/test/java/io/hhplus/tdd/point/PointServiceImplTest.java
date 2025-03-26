@@ -38,7 +38,7 @@ class PointServiceImplTest {
         long userId = 1L;
         UserPoint userPoint = new UserPoint(userId, 1000L, System.currentTimeMillis());
 
-        when(pointRepository.selectById(userId)).thenReturn(Optional.of(userPoint));
+        when(pointRepository.selectById(userId)).thenReturn(userPoint);
 
         //when
         UserPoint result = pointService.getUserPoint(userId);
@@ -52,7 +52,7 @@ class PointServiceImplTest {
     void getUserPointFail() {
         //given
         long userId = 2L;
-        when(pointRepository.selectById(userId)).thenReturn(Optional.empty());
+        when(pointRepository.selectById(userId)).thenReturn(null);
 
         //when //then
         try {
@@ -72,7 +72,7 @@ class PointServiceImplTest {
         UserPoint existing = new UserPoint(userId, 500L, System.currentTimeMillis());
         UserPoint charged = existing.charge(amount);
 
-        when(pointRepository.selectById(userId)).thenReturn(Optional.of(existing));
+        when(pointRepository.selectById(userId)).thenReturn(existing);
         when(pointRepository.insertOrUpdate(any())).thenReturn(charged);
 
         //when
@@ -92,7 +92,7 @@ class PointServiceImplTest {
         UserPoint existing = new UserPoint(userId, 1000L, System.currentTimeMillis());
         UserPoint used = existing.use(amount);
 
-        when(pointRepository.selectById(userId)).thenReturn(Optional.of(existing));
+        when(pointRepository.selectById(userId)).thenReturn(existing);
         when(pointRepository.insertOrUpdate(any())).thenReturn(used);
 
         //when
@@ -107,7 +107,7 @@ class PointServiceImplTest {
     @DisplayName("포인트 사용 실패 - 존재하지 않는 사용자")
     void useUserNotFoundFail() {
         //given
-        when(pointRepository.selectById(anyLong())).thenReturn(Optional.empty());
+        when(pointRepository.selectById(anyLong())).thenReturn(null);
 
         //when //then
         try {
