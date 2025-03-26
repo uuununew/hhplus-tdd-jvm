@@ -15,8 +15,6 @@ public class PointServiceImpl implements PointService{
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
-    private static final long MAX_VALUE = 1_000_000L;
-
     @Override
     public UserPoint getUserPoint(long id) {
         Optional<UserPoint> optional = pointRepository.selectById(id);
@@ -33,13 +31,6 @@ public class PointServiceImpl implements PointService{
 
     @Override
     public UserPoint charge(long id, long amount) {
-        if (amount < 0) {
-            throw new PointException(PointErrorCode.CHARGE_AMOUNT_LESS_THAN_ZERO);
-        }
-        if (amount > MAX_VALUE) {
-            throw new PointException(PointErrorCode.CHARGE_AMOUNT_GREATER_THAN_MAX);
-        }
-
         UserPoint userPoint = pointRepository.selectById(id).orElse(UserPoint.empty(id));
         UserPoint charged = userPoint.charge(amount);
         UserPoint saved = pointRepository.insertOrUpdate(charged);
@@ -52,13 +43,10 @@ public class PointServiceImpl implements PointService{
 
     @Override
     public UserPoint use(long id, long amount) {
-        if (amount < 0) {
-            throw new PointException(PointErrorCode.USE_AMOUNT_LESS_THAN_ZERO);
-        }
 
         Optional<UserPoint> optional = pointRepository.selectById(id);
-        if (optional.isEmpty() || optional.get().point() < amount) {
-            throw new PointException(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT);
+        if (optional.isEmpty()) {
+            throw new PointException(PointErrorCode.USER_ID_NOT_EXIST);
         }
 
         UserPoint used = optional.get().use(amount);
