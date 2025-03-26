@@ -48,6 +48,9 @@ public class PointServiceImpl implements PointService{
     public UserPoint use(long id, long amount) {
         UserPoint userPoint = pointRepository.selectById(id);
 
+        if (userPoint == null) {
+            throw new PointException(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT);
+        }
         //포인트 사용
         UserPoint used = userPoint.use(amount);
         UserPoint updated = pointRepository.insertOrUpdate(used);
