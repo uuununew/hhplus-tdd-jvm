@@ -1,5 +1,8 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.Exception.PointErrorCode;
+import io.hhplus.tdd.Exception.PointException;
+
 public record UserPoint(
         long id,
         long point,
@@ -14,22 +17,22 @@ public record UserPoint(
 
     public UserPoint charge(long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("충전 금액은 0 이상이어야 합니다.");
+            throw new PointException(PointErrorCode.CHARGE_AMOUNT_LESS_THAN_ZERO);
         }
         long total = this.point + amount;
 
         if (total > MAX_POINT) {
-            throw new IllegalArgumentException("포인트는 최대 1,000,000까지 보유할 수 있습니다.");
+            throw new PointException(PointErrorCode.CHARGE_AMOUNT_GREATER_THAN_MAX);
         }
         return new UserPoint(id, total, System.currentTimeMillis());
     }
 
     public UserPoint use(long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("사용 금액은 1 이상이어야 합니다.");
+            throw new PointException(PointErrorCode.USE_AMOUNT_LESS_THAN_ZERO);
         }
         if (this.point < amount) {
-            throw new IllegalArgumentException("포인트가 부족합니다.");
+            throw new PointException(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT);
         }
         long afterUse = this.point - amount;
         return new UserPoint(id, afterUse, System.currentTimeMillis());

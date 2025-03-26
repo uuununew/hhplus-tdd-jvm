@@ -1,10 +1,14 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.Exception.PointErrorCode;
+import io.hhplus.tdd.Exception.PointException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
 class UserPointTest {
 
@@ -29,12 +33,12 @@ class UserPointTest {
         UserPoint userPoint = new UserPoint(1L, 999_999L, System.currentTimeMillis());
 
         //when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        PointException exception = assertThrows(PointException.class, () -> {
             userPoint.charge(2L);
         });
 
         //then
-        assertThat(exception.getMessage()).contains("최대");
+        assertThat(exception.getErrorCode()).isEqualTo(PointErrorCode.CHARGE_AMOUNT_GREATER_THAN_MAX);
     }
 
     @Test
@@ -58,12 +62,12 @@ class UserPointTest {
         UserPoint userPoint = new UserPoint(1L, 1000L, System.currentTimeMillis());
 
         //when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        PointException exception = assertThrows(PointException.class, () -> {
             userPoint.use(-100L);
         });
 
         //then
-        assertThat(exception.getMessage()).contains("1 이상");
+        assertThat(exception.getErrorCode()).isEqualTo(PointErrorCode.USE_AMOUNT_LESS_THAN_ZERO);
     }
 
     @Test
@@ -73,12 +77,12 @@ class UserPointTest {
         UserPoint userPoint = new UserPoint(1L, 100L, System.currentTimeMillis());
 
         //when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        PointException exception = assertThrows(PointException.class, () -> {
             userPoint.use(200L);
         });
 
         //then
-        assertThat(exception.getMessage()).contains("부족");
+        assertThat(exception.getErrorCode()).isEqualTo(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT);
     }
 
 }

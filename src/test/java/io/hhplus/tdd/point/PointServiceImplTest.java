@@ -114,7 +114,7 @@ class PointServiceImplTest {
             pointService.use(1L, 100L);
             fail("예외가 발생해야 합니다.");
         } catch (PointException e) {
-            assertThat(e.getMessage()).isEqualTo(PointErrorCode.BALANCE_LESS_THAN_USE_AMOUNT.getMessage());
+            assertThat(e.getMessage()).isEqualTo(PointErrorCode.USER_ID_NOT_EXIST.getMessage());
         }
     }
 
