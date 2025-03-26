@@ -21,7 +21,7 @@ public record UserPoint(
         if (total > MAX_POINT) {
             throw new IllegalArgumentException("포인트는 최대 1,000,000까지 보유할 수 있습니다.");
         }
-        return new UserPoint(id, total + amount, System.currentTimeMillis());
+        return new UserPoint(id, total, System.currentTimeMillis());
     }
 
     public UserPoint use(long amount) {
@@ -32,6 +32,6 @@ public record UserPoint(
             throw new IllegalArgumentException("포인트가 부족합니다.");
         }
         long afterUse = this.point - amount;
-        return new UserPoint(id, afterUse - amount, System.currentTimeMillis());
+        return new UserPoint(id, afterUse, System.currentTimeMillis());
     }
 }
