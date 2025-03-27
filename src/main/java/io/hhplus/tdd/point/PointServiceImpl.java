@@ -18,11 +18,7 @@ public class PointServiceImpl implements PointService{
     @Override
     public UserPoint getUserPoint(long id) {
         //포인트 조회
-       UserPoint userPoint = pointRepository.selectById(id);
-        if (userPoint == null) {
-            throw new PointException(PointErrorCode.USER_ID_NOT_EXIST);
-        }
-        return userPoint;
+        return pointRepository.selectById(id);
     }
 
     @Override
