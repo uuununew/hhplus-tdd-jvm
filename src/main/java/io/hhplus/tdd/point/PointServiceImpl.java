@@ -30,11 +30,9 @@ public class PointServiceImpl implements PointService{
 
     @Override
     public UserPoint charge(long id, long amount) {
-        // 1. 해당 유저 ReentrantLock을 가져옴
+        // 1. 해당 유저 ReentrantLock 가져옴
         ReentrantLock lock = userLockManager.getLock(id);
-        // 2. lock 객체를 모니터로 사용하는 synchronized 블록
-        synchronized (lock){
-            // 3. 명시적으로 Lock을 획득
+            // 2. 명시적으로 Lock 획득
             lock.lock();
             try{
                 //포인트 충전
@@ -48,19 +46,16 @@ public class PointServiceImpl implements PointService{
                 );
                 return saved;
             }finally {
-                //4. lock 해제
+                //3. lock 해제
                 lock.unlock();
             }
-        }
     }
 
     @Override
     public UserPoint use(long id, long amount) {
-        // 1. 해당 유저 ReentrantLock을 가져옴
+        // 1. 해당 유저 ReentrantLock 가져옴
         ReentrantLock lock = userLockManager.getLock(id);
-        // 2. lock 객체를 모니터로 사용하는 synchronized 블록
-        synchronized (lock){
-            // 3. 명시적으로 Lock을 획득
+            // 2. 명시적으로 Lock 획득
             lock.lock();
             try{
                 UserPoint userPoint = pointRepository.selectById(id);
@@ -78,9 +73,8 @@ public class PointServiceImpl implements PointService{
                 );
                 return updated;
             }finally {
-                //4. lock 해제
+                //3. lock 해제
                 lock.unlock();
             }
-        }
     }
 }
