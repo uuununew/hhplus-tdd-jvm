@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 class UserPointTest {
 
     @Test
-    @DisplayName("포인트 충전 - 정상 동작")
+    @DisplayName("포인트 충전 - 기존 보유 포인트에 충전 금액이 누적된다.")
     void chargeSuccess() {
         //given
         UserPoint userPoint = new UserPoint(1L, 1000L, System.currentTimeMillis());
@@ -27,7 +27,7 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("포인트 충전 실패 - 최대값 초과")
+    @DisplayName("포인트 충전 실패 - 보유 가능한 최대 포인트 초과 시 예외 발생")
     void chargeExceedMaxFail() {
         //given
         UserPoint userPoint = new UserPoint(1L, 999_999L, System.currentTimeMillis());
@@ -42,7 +42,7 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 - 정상 동작")
+    @DisplayName("포인트 사용 - 보유 포인트에서 사용 금액만큼 차감된다")
     void useSuccess() {
         //given
         UserPoint userPoint = new UserPoint(1L, 1000L, System.currentTimeMillis());
@@ -56,7 +56,7 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 실패 - 음수 금액")
+    @DisplayName("포인트 사용 실패 - 사용 금액이 0 이하일 경우 예외 발생한다")
     void useNegativeAmountFail() {
         //given
         UserPoint userPoint = new UserPoint(1L, 1000L, System.currentTimeMillis());
@@ -71,7 +71,7 @@ class UserPointTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 실패 - 잔액 부족")
+    @DisplayName("포인트 사용 실패 - 사용 금액이 잔액보다 많을 경우 예외 발생한다")
     void useOverBalanceFail() {
         //given
         UserPoint userPoint = new UserPoint(1L, 100L, System.currentTimeMillis());

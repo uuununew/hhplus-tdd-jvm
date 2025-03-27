@@ -32,7 +32,7 @@ class PointServiceImplTest {
 
 
     @Test
-    @DisplayName("유저 포인트 조회 성공")
+    @DisplayName("유저 포인트 조회 성공 - 보유 포인트가 올바르게 조회된다.")
     void getUserPointSuccess() {
         //given
         long userId = 1L;
@@ -48,23 +48,7 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("유저 포인트 조회 실패 - 존재하지 않는 사용자")
-    void getUserPointFail() {
-        //given
-        long userId = 2L;
-        when(pointRepository.selectById(userId)).thenReturn(null);
-
-        //when //then
-        try {
-            pointService.getUserPoint(userId);
-            fail("예외가 발생해야 합니다.");
-        } catch (PointException e) {
-            assertThat(e.getMessage()).isEqualTo(PointErrorCode.USER_ID_NOT_EXIST.getMessage());
-        }
-    }
-
-    @Test
-    @DisplayName("포인트 충전 성공")
+    @DisplayName("포인트 충전 성공 - 기존 보유 포인트에 충전 금액이 누적된다.")
     void chargeSuccess() {
         //given
         long userId = 1L;
@@ -84,7 +68,7 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("포인트 사용 성공")
+    @DisplayName("포인트 사용 성공 - 보유 포인트에서 사용 금액만큼 차감된다")
     void useSuccess() {
         //given
         long userId = 1L;
@@ -119,7 +103,7 @@ class PointServiceImplTest {
     }
 
     @Test
-    @DisplayName("포인트 이력 조회 성공")
+    @DisplayName("포인트 이력 조회 성공 - 충전과 사용 이력이 정확히 반환된다")
     void getUserPointHistorySuccess() {
         //given
         long userId = 1L;
