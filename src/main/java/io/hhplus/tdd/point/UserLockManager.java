@@ -18,6 +18,6 @@ public class UserLockManager {
      * @return 해당 사용자 ID에 대한 전용 ReentrantLock
      */
     public ReentrantLock getLock(long userId) {
-        return lockMap.computeIfAbsent(userId, key -> new ReentrantLock());
+        return lockMap.computeIfAbsent(userId, key -> new ReentrantLock(true)); //true로 순차적
     }
 }
