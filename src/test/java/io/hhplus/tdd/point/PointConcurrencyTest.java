@@ -2,6 +2,8 @@ package io.hhplus.tdd.point;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -34,8 +36,11 @@ public class PointConcurrencyTest {
         //10개의 쓰레드가 동시에 유저에게 100포인트씩 충전
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
-                pointService.charge(userId, amount);
-                latch.countDown();
+                try {
+                    pointService.charge(userId, amount);
+                } finally {
+                    latch.countDown();
+                }
             });
         }
         latch.await();
@@ -57,15 +62,22 @@ public class PointConcurrencyTest {
         //when
         //충전요청
         executor.submit(() -> {
-            pointService.charge(userId, 1000L);
-            latch.countDown();
+            try {
+                pointService.charge(userId, 1000L);
+            } finally {
+                latch.countDown();
+            }
         });
 
         //사용 요청
         executor.submit(() -> {
-            pointService.use(userId, 700L);
-            latch.countDown();
+            try {
+                pointService.use(userId, 700L);
+            } finally {
+                latch.countDown();
+            }
         });
+
         latch.await();
 
         //then
@@ -86,15 +98,22 @@ public class PointConcurrencyTest {
         //when
         // 사용 요청
         executor.submit(() -> {
-            pointService.use(userId, 700L);
-            latch.countDown();
+            try {
+                pointService.use(userId, 700L);
+            } finally {
+                latch.countDown();
+            }
         });
 
         //충전 요청
         executor.submit(() -> {
-            pointService.charge(userId, 1000L);
-            latch.countDown();
+            try {
+                pointService.charge(userId, 1000L);
+            } finally {
+                latch.countDown();
+            }
         });
+
         latch.await();
 
         //then
