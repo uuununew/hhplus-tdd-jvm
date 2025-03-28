@@ -102,7 +102,7 @@ public class UserLockManager {
     private final ConcurrentHashMap<Long, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
     public ReentrantLock getLock(long userId) {
-        return lockMap.computeIfAbsent(userId, id -> new ReentrantLock());
+        return lockMap.computeIfAbsent(userId, id -> new ReentrantLock(true));
     }
 }
 ```
